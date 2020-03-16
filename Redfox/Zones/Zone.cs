@@ -25,6 +25,7 @@ namespace Redfox.Zones
         {
             this.name = _name;
             this.users = new List<User>();
+            this.Authenticator = new DefaultZoneAuthenticator();
             this.RoomManager = new RoomManager();
             this.PrepareExtensions(_extensions);
             this.messageHandler = new ZoneMessageHandler();
@@ -38,9 +39,33 @@ namespace Redfox.Zones
                 foreach (Type extensionType in _extensions)
                 {
                     RedfoxExtension extension = Activator.CreateInstance(extensionType) as RedfoxExtension;
+                    extension.Zone = this;
                     extension.extensionEventManager = extensionEventManager;
                     this.extensions.Add(extension);
                     extension.Initialize();
+                }
+            }
+        }
+        internal void Join(User user, string username, string password)
+        {
+            if (this.users.Contains(user))
+            {
+                throw new Exception("User already is in this zone");
+            }
+            else
+            {
+                bool loginSuccessful = false;
+                if (string.IsNullOrEmpty(username))
+                {
+                    loginSuccessful = this.Authenticator.GuestLogin(user);
+                }
+                else
+                {
+                    loginSuccessful = this.Authenticator.Login(user, username, password);
+                }
+                if (loginSuccessful)
+                {
+                    Join(user);
                 }
             }
         }

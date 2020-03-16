@@ -10,12 +10,14 @@ namespace Redfox.Rooms
 {
     public class Room
     {
+        public int id;
         public string name;
         public int maxUsers { get; private set; }
         internal List<User> users;
 
         public Room(RoomConfig cfg)
         {
+            this.id = cfg.id;
             this.maxUsers = cfg.max_users;
             this.name = cfg.room_name;
             this.users = new List<User>();
@@ -34,7 +36,7 @@ namespace Redfox.Rooms
             {
                 users.Add(user);
                 user.Room = this;
-                user.Room.SendMessage(new UserJoinedRoomResponse(user));
+                user.Room.SendMessage(new UserJoinedRoomResponse(user), user);
                 user.Zone.extensionEventManager.OnRoomJoin(user, this);
             }
         }
@@ -43,7 +45,7 @@ namespace Redfox.Rooms
             if (users.Contains(user))
             {
                 user.Zone.extensionEventManager.OnRoomLeave(user, this);
-                SendMessage(new UserLeftRoomResponse(user));
+                SendMessage(new UserLeftRoomResponse(user), user);
                 users.Remove(user);
                 user.Room = null;
             }
@@ -52,11 +54,14 @@ namespace Redfox.Rooms
                 throw new Exception("User is not in this room");
             }
         }
-        public void SendMessage(IResponseMessage message)
+        public void SendMessage(IResponseMessage message, User skipUser = null)
         {
             foreach (User user in users)
             {
-                user.SendMessage(message);
+                if (user != skipUser)
+                {
+                    user.SendMessage(message);
+                }
             }
         }
         public void SetMaxUsers(int maxUsers)

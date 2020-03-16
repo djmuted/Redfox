@@ -10,11 +10,11 @@ namespace Redfox.Zones
         public abstract bool Login(User user, string login, string password);
         public abstract bool GuestLogin(User user);
 
-        public void UpdateUserData(User user, string guid, string name, bool isGuest)
+        public void UpdateUserData(User user, int _id, string _name, bool _isGuest)
         {
-            user.guid = guid;
-            user.name = name;
-            user.IsGuest = isGuest;
+            user.id = _id;
+            user.name = _name;
+            user.IsGuest = _isGuest;
         }
     }
 }

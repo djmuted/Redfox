@@ -1,7 +1,7 @@
 ﻿using Redfox.Extensions.Events;
+using Redfox.Zones;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using System.Text;
 
 namespace Redfox.Extensions
@@ -10,7 +10,7 @@ namespace Redfox.Extensions
     {
         public ExtensionEventManager extensionEventManager { get; internal set; }
         public string ExtensionName { get; private set; }
-        public Zone Zone { get; private set; }
+        public Zone Zone { get; internal set; }
         public RedfoxExtension(string extensionName)
         {
             this.ExtensionName = extensionName;

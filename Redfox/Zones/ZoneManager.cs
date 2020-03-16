@@ -29,7 +29,7 @@ namespace Redfox.Zones
         }
         public Zone GetZone(string name)
         {
-            if (this.zones.ContainsKey(name))
+            if (!this.zones.ContainsKey(name))
             {
                 throw new Exception("A zone with specified name does not exist");
             }

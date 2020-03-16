@@ -15,7 +15,7 @@ namespace Redfox.Users
     {
         private INetworkClient client;
 
-        public string guid;
+        public int id;
         public string name { get; internal set; }
         public bool IsGuest { get; internal set; }
         public Zone Zone { get; internal set; }
@@ -30,25 +30,36 @@ namespace Redfox.Users
             client.UserDisconnected += OnDisconnected;
             LogManager.GetCurrentClassLogger().Debug($"User connected!");
         }
-        private void OnDataReceived(string data)
+        private void OnDataReceived(byte[] bytes)
         {
-            LogManager.GetCurrentClassLogger().Debug($"Data received: " + data.ToString());
-            string[] messages = data.Split("\0");
-            foreach (string message in messages)
+            string message = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+            LogManager.GetCurrentClassLogger().Debug($"Data received: " + message);
+            if (message.StartsWith("{"))
             {
                 try
                 {
                     if (!string.IsNullOrEmpty(message))
                         Core.messageHandler.HandleMessage(this, message);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (!Env.Debugging)
                 {
                     LogManager.GetCurrentClassLogger().Error($"There was an error while handling a message: " + ex.ToString());
+                }
+            } else
+            {
+                try
+                {
+                    this.Zone?.extensionEventManager.OnBinaryData(this, bytes);
+                }
+                catch when (!Env.Debugging)
+                {
+                    LogManager.GetCurrentClassLogger().Error($"There was an error while handling binary data. ");
                 }
             }
         }
         private void OnDisconnected()
         {
+            LeaveRoom();
             Core.UserManager.RemoveUser(this);
             LogManager.GetCurrentClassLogger().Debug($"User disconnected!");
         }
@@ -70,10 +81,7 @@ namespace Redfox.Users
         }
         public void LeaveRoom()
         {
-            if (this.Room != null)
-            {
-                this.Room.Leave(this);
-            }
+            this.Room?.Leave(this);
         }
     }
 }

@@ -14,12 +14,14 @@ namespace Redfox.Extensions.Events
         public delegate void RoomLeaveEventHandler(User user, Room room);
         public delegate void ZoneJoinEventHandler(User user, Zone zone);
         public delegate void ZoneLeaveEventHandler(User user, Zone zone);
+        public delegate void BinaryDataEventHandler(User user, byte[] data);
 
         public event ZoneReadyEventHandler ZoneReady;
         public event RoomJoinEventHandler RoomJoin;
         public event RoomLeaveEventHandler RoomLeave;
         public event ZoneJoinEventHandler ZoneJoin;
         public event ZoneLeaveEventHandler ZoneLeave;
+        public event BinaryDataEventHandler BinaryDataReceive;
 
         public ExtensionEventManager()
         {
@@ -44,6 +46,10 @@ namespace Redfox.Extensions.Events
         internal virtual void OnZoneLeave(User user, Zone zone)
         {
             ZoneLeave?.Invoke(user, zone);
+        }
+        internal virtual void OnBinaryData(User user, byte[] data)
+        {
+            BinaryDataReceive?.Invoke(user, data);
         }
     }
 }

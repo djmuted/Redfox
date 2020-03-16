@@ -7,6 +7,8 @@ namespace Redfox
     {
         static void Main(string[] args)
         {
+            var pack = Messages.GlobalMessages.JoinZoneRequest.Generate("chat");
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(pack));
             Core.Boot();
             Console.CancelKeyPress += delegate
             {

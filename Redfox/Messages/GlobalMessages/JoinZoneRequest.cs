@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using Redfox.Messages.ZoneMessages.Responses;
 using Redfox.Users;
 
 namespace Redfox.Messages.GlobalMessages
 {
     class JoinZoneRequest : IGlobalRequestMessage
     {
+        [JsonProperty]
         public string zoneName { get; private set; }
+        [JsonProperty]
+        public string username { get; private set; }
+        [JsonProperty]
+        public string password { get; private set; }
         public JoinZoneRequest() : base("rfx#jz")
         {
             //this.zoneName = _zoneName;
@@ -20,7 +27,8 @@ namespace Redfox.Messages.GlobalMessages
         }
         public override void Handle(User user)
         {
-            Core.ZoneManager.GetZone(zoneName)?.Join(user);
+            Core.ZoneManager.GetZone(zoneName)?.Join(user, username, password);
+            user.SendMessage(new JoinZoneResponse(user.Zone, user));
         }
     }
 }

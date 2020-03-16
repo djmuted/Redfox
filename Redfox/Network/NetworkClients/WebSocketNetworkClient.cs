@@ -16,11 +16,11 @@ namespace Redfox.Network.NetworkClients
         public WebSocketNetworkClient(IWebSocketConnection _socket)
         {
             this.socket = _socket;
-            this.socket.OnMessage += message => DataReceived?.Invoke(message);
+            this.socket.OnMessage += message => DataReceived?.Invoke(Encoding.UTF8.GetBytes(message));
+            this.socket.OnBinary += message => DataReceived?.Invoke(message);
             this.socket.OnClose += () => UserDisconnected?.Invoke();
             ((INetworkClient)this).OnUserConnected();
         }
-
         public void SendData(string data)
         {
             LogManager.GetCurrentClassLogger().Debug($"Sending data to client: {data}");

@@ -9,7 +9,7 @@ namespace Redfox.Network.NetworkClients
         public delegate void UserDisconnectedEventHandler();
         public event UserDisconnectedEventHandler UserDisconnected;
 
-        public delegate void DataReceivedEventHandler(string message);
+        public delegate void DataReceivedEventHandler(byte[] message);
         public event DataReceivedEventHandler DataReceived;
 
         public abstract void SendData(string data);

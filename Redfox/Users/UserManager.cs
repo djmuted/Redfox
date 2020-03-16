@@ -1,6 +1,7 @@
 ﻿using Redfox.Network.NetworkClients;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Redfox.Users
@@ -24,6 +25,10 @@ namespace Redfox.Users
             {
                 users.Remove(user);
             }
+        }
+        public User GetUser(string username)
+        {
+            return users.First(u => u.name.ToLower() == username.ToLower());
         }
     }
 }

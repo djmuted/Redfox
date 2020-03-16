@@ -9,15 +9,24 @@ namespace Redfox.Zones
     {
         public override bool GuestLogin(User user)
         {
-            string guid = Guid.NewGuid().ToString("N");
-            string name = "Guest" + new Random().Next(99999);
-            this.UpdateUserData(user, guid, name, true);
+            int id = new Random().Next(99999);
+            string name = "Guest" + id;
+            this.UpdateUserData(user, id, name, true);
             return true;
         }
 
         public override bool Login(User user, string login, string password)
         {
-            return false; //no account login
+            if (Core.UserManager.GetUser(login) != null)
+            {
+                return false; //user already logged in
+            }
+            else
+            {
+                int id = new Random().Next(99999);
+                this.UpdateUserData(user, id, login, true); //is still a guest
+            }
+            return true;
         }
     }
 }
