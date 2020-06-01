@@ -13,7 +13,6 @@ namespace Redfox.Messages.ZoneMessages.Responses
         public UserJoinedRoomResponse(User user) : base("rfx#ujr")
         {
             this.userData = UserData.FromUser(user);
-            this.rid = user.Room.id;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Redfox.Zones
             this.Authenticator = new DefaultZoneAuthenticator();
             this.RoomManager = new RoomManager();
             this.PrepareExtensions(_extensions);
-            this.messageHandler = new ZoneMessageHandler();
+            this.messageHandler = new ZoneMessageHandler(this.extensions);
         }
         internal void PrepareExtensions(List<Type> _extensions)
         {
@@ -38,6 +38,7 @@ namespace Redfox.Zones
             {
                 foreach (Type extensionType in _extensions)
                 {
+                    Console.WriteLine("Preparing "+extensionType.ToString());
                     RedfoxExtension extension = Activator.CreateInstance(extensionType) as RedfoxExtension;
                     extension.Zone = this;
                     extension.extensionEventManager = extensionEventManager;
@@ -95,6 +96,10 @@ namespace Redfox.Zones
                 users.Remove(user);
                 user.Zone = null;
             }
+        }
+        public void SetAuthenticator(ZoneAuthenticator _zoneAuthenticator)
+        {
+            this.Authenticator = _zoneAuthenticator;
         }
     }
 }

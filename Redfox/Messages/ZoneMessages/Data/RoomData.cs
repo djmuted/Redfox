@@ -15,7 +15,6 @@ namespace Redfox.Messages.ZoneMessages.Data
         public static RoomData FromRoom(Room room)
         {
             RoomData roomData = new RoomData();
-            roomData.id = room.id;
             roomData.name = room.name;
             roomData.users = new List<UserData>();
             foreach (User user in room.users)

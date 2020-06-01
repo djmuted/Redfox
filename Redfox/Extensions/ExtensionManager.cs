@@ -3,18 +3,23 @@ using Redfox.Extensions.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
+using System.Linq;
+using Redfox.Messages;
 
 namespace Redfox.Extensions
 {
     internal class ExtensionManager
     {
         internal Dictionary<string, Type> extensions;
+        internal Dictionary<string, List<Type>> extensionHandlers;
 
         public ExtensionManager()
         {
             this.extensions = new Dictionary<string, Type>();
+            this.extensionHandlers = new Dictionary<string, List<Type>>();
         }
         public void Rescan()
         {
@@ -30,7 +35,7 @@ namespace Redfox.Extensions
                     if (type.IsSubclassOf(typeof(RedfoxExtension)))
                     {
                         RedfoxExtension extension = Activator.CreateInstance(type) as RedfoxExtension;
-                        AddExtension(extension, type);
+                        AddExtension(extension, type, assembly);
                     }
                 }
             }
@@ -39,9 +44,11 @@ namespace Redfox.Extensions
                 LogManager.GetCurrentClassLogger().Info($"No extensions found!");
             }
         }
-        public void AddExtension(RedfoxExtension extension, Type extensionType)
+        public void AddExtension(RedfoxExtension extension, Type extensionType, Assembly assembly)
         {
             this.extensions.Add(extension.ExtensionName, extensionType);
+            var types = assembly.GetTypes().Where(p => typeof(IZoneRequestMessage).IsAssignableFrom(p) && !p.IsAbstract).ToList();
+            this.extensionHandlers.Add(extension.ExtensionName, types);
             LogManager.GetCurrentClassLogger().Info($"Registered a new extension: {extension.ExtensionName}");
         }
     }

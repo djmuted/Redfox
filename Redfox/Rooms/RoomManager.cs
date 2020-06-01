@@ -23,6 +23,17 @@ namespace Redfox.Rooms
                 throw new Exception($"A room called '{room.name}' already exists in this zone!");
             }
         }
+        public void RemoveRoom(Room room)
+        {
+            if (rooms.ContainsKey(room.name))
+            {
+                this.rooms.Remove(room.name);
+            }
+            else
+            {
+                throw new Exception($"A room called '{room.name}' does not exist in this zone!");
+            }
+        }
         public Room GetRoom(string roomName)
         {
             if (rooms.ContainsKey(roomName))

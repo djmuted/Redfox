@@ -4,6 +4,7 @@ using Redfox.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Redfox.Messages
@@ -16,10 +17,7 @@ namespace Redfox.Messages
         public IMessageHandler(Type _messageType)
         {
             this.messageType = _messageType;
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(s => s.GetTypes())
-            .Where(p => messageType.IsAssignableFrom(p) && !p.IsAbstract);
-
+            var types = Assembly.GetExecutingAssembly().GetTypes().Where(p => messageType.IsAssignableFrom(p) && !p.IsAbstract).ToList();
             this.handlers = new Dictionary<string, Type>();
             foreach (Type type in types)
             {

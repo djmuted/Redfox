@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Redfox.Messages
 {
-    class IZoneResponseMessage : IResponseMessage
+    public class IZoneResponseMessage : IResponseMessage
     {
         public IZoneResponseMessage(string _type) : base(_type, "zone")
         {

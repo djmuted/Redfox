@@ -10,14 +10,12 @@ namespace Redfox.Rooms
 {
     public class Room
     {
-        public int id;
         public string name;
         public int maxUsers { get; private set; }
         internal List<User> users;
 
         public Room(RoomConfig cfg)
         {
-            this.id = cfg.id;
             this.maxUsers = cfg.max_users;
             this.name = cfg.room_name;
             this.users = new List<User>();
