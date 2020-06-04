@@ -32,6 +32,7 @@ namespace Redfox.Rooms
             }
             else
             {
+                user.LeaveRoom();
                 users.Add(user);
                 user.Room = this;
                 user.Room.SendMessage(new UserJoinedRoomResponse(user), user);

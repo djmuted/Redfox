@@ -59,9 +59,12 @@ namespace Redfox.Users
         }
         private void OnDisconnected()
         {
-            LeaveRoom();
-            Core.UserManager.RemoveUser(this);
-            LogManager.GetCurrentClassLogger().Debug($"User disconnected!");
+            lock (Core.messageHandler.globalMessageHandler)
+            {
+                LeaveZone();
+                Core.UserManager.RemoveUser(this);
+                LogManager.GetCurrentClassLogger().Debug($"User disconnected!");
+            }
         }
         public void SendMessage(IResponseMessage message)
         {
@@ -82,6 +85,10 @@ namespace Redfox.Users
         public void LeaveRoom()
         {
             this.Room?.Leave(this);
+        }
+        public void LeaveZone()
+        {
+            this.Zone?.Leave(this);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Redfox.Messages
 {
     class MessageHandlerManager
     {
-        GlobalMessageHandler globalMessageHandler;
+        internal GlobalMessageHandler globalMessageHandler;
         public MessageHandlerManager()
         {
             this.globalMessageHandler = new GlobalMessageHandler();
@@ -24,20 +24,26 @@ namespace Redfox.Messages
                 {
                     case "global":
                         {
-                            globalMessageHandler.HandleMessage(user, message_str);
+                            lock (globalMessageHandler)
+                            {
+                                globalMessageHandler.HandleMessage(user, message_str);
+                            }
                             break;
                         }
                     case "zone":
                         {
-                            if (user.Zone != null)
+                            lock (globalMessageHandler)
                             {
-                                user.Zone.messageHandler.HandleMessage(user, message_str);
+                                if (user.Zone != null)
+                                {
+                                    user.Zone.messageHandler.HandleMessage(user, message_str);
+                                }
+                                else
+                                {
+                                    throw new Exception("User requested to handle a zone message but is not in a zone");
+                                }
+                                break;
                             }
-                            else
-                            {
-                                throw new Exception("User requested to handle a zone message but is not in a zone");
-                            }
-                            break;
                         }
                     default:
                         {
